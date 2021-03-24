@@ -1,7 +1,6 @@
 {
   "name": "scan-code-net",
   "files": [
-    "workflows/scan-code-net/scan-code-net.template.yml",
-    "libs/workflows.lib.yml"
+    "workflows/scan-code-net/scan-code-net.template.yml"
   ]
 }
