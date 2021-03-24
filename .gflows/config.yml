@@ -5,7 +5,7 @@ templates:
   engine: ytt
   defaults:
     libs:
-      - workflow-configuration
+      - workflow-configuration/scan-code-net
     dependencies:
       - https://raw.githubusercontent.com/CoverGo/ci-workflow-libraries/v1.1/.gflows
 
