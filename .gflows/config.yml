@@ -1,0 +1,11 @@
+# Config file for GFlows.
+# See https://github.com/jbrunton/gflows/wiki/Configuration for options.
+githubDir: github-sample
+templates:
+  engine: ytt
+  defaults:
+    libs:
+      - workflow-configuration
+    dependencies:
+      - https://raw.githubusercontent.com/CoverGo/ci-workflow-libraries/v1.1/.gflows
+

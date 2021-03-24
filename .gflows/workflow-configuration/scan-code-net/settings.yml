@@ -1,0 +1,22 @@
+#@data/values
+---
+scan_code_net:
+  organisation: covergo
+  sonarcloud_project:  CoverGo_Auth
+  github_token: ${{ secrets.GITHUB_TOKEN }}
+  sonarcloud_token:  ${{ secrets.SONAR_TOKEN }}
+  #optional
+  #default
+  git:
+    branches:
+      - master
+      - main
+      - F/*
+      - f/*
+      - R/*
+      - r/*
+      - B/*
+      - b/*
+
+    
+    

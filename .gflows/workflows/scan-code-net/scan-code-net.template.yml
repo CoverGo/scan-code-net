@@ -1,0 +1,44 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:overlay", "overlay")
+#@ load("workflows.lib.yml", "pull_request_defaults")
+
+name: Scan code
+"on": #@ pull_request_defaults(data.values.scan_code_net)
+jobs:
+  build:
+    name: Analyse
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up JDK 11
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.11
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v1
+        with:
+          path: ~/sonarcache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v1
+        with:
+          path: ./.sonar/scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: #@ data.values.scan_code_net.github_token
+          SONAR_TOKEN: #@ data.values.scan_code_net.sonarcloud_token
+          PROJET_NAME: #@ data.values.scan_code_net.sonarcloud_project
+          ORGANISATION_NAME: #@ data.values.scan_code_net.organisation
+        run: |
+          dotnet sonarscanner begin /k:"$PROJET_NAME" /o:"$ORGANISATION_NAME" /d:sonar.login="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build -v q
+          dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
