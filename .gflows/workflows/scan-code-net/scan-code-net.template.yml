@@ -39,6 +39,6 @@ jobs:
           PROJET_NAME: #@ data.values.scan_code_net.sonarcloud_project
           ORGANISATION_NAME: #@ data.values.scan_code_net.organisation
         run: |
-          dotnet sonarscanner begin /k:"$PROJET_NAME" /o:"$ORGANISATION_NAME" /d:sonar.login="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet sonarscanner begin /k:$PROJET_NAME /o:$ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io"
           dotnet build -v q
-          dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
+          dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN

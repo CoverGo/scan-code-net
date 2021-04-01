@@ -47,6 +47,6 @@ jobs:
         PROJET_NAME: CoverGo_Auth
         ORGANISATION_NAME: covergo
       run: |
-        dotnet sonarscanner begin /k:"$PROJET_NAME" /o:"$ORGANISATION_NAME" /d:sonar.login="$SONAR_TOKEN" /d:sonar.host.url="https://sonarcloud.io"
+        dotnet sonarscanner begin /k:$PROJET_NAME /o:$ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io"
         dotnet build -v q
-        dotnet sonarscanner end /d:sonar.login="$SONAR_TOKEN"
+        dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
