@@ -67,7 +67,7 @@ jobs:
         env:
           GITHUB_TOKEN: #@ data.values.scan_code_net.github_token
           SONAR_TOKEN: #@ data.values.scan_code_net.sonar.token
-          SONAR_PROJET_NAME: #@ data.values.scan_code_net.sonar.project
+          SONAR_PROJECT_NAME: #@ data.values.scan_code_net.sonar.project
           SONAR_ORGANISATION_NAME: #@ data.values.scan_code_net.sonar.organisation
           VERSION: ${{ needs.version.outputs.app_version }}
           COVERLET_SETTINGS_FILE: #@ data.values.scan_code_net.coverlet_settings_file
