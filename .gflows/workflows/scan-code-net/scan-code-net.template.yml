@@ -5,9 +5,40 @@
 name: Scan code
 "on": #@ pull_request_defaults(data.values.scan_code_net)
 jobs:
-  build:
+  version:
+    runs-on: ubuntu-latest
+    name: Get version from git tag
+    outputs:
+      app_version: ${{ steps.version.outputs.app_version }}
+      file_version: ${{ steps.version.outputs.file_version }}
+      information_version: ${{ steps.version.outputs.information_version }}
+      issue_id_slug: ${{ steps.issue-key.outputs.issue_id_slug }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Checkout GitHub Action Repos
+        uses: daspn/private-actions-checkout@v2
+        with:
+          actions_list: '[ "covergo/get-version@v1.4", "covergo/get-issue-key@v1.2", "covergo/docker-extract@v1", "covergo/docker-diagnose@v1.4", "covergo/set-compose-tags@v1", "covergo/run-in-compose@v1" ]'
+          checkout_base_path: ./.github/actions
+          app_id: ${{ secrets.PRIVATE_ACTION_APP_ID }}
+          app_private_key: ${{ secrets.PRIVATE_ACTION_APP_PRIVATE_KEY }}
+      - name: Get jira Ticket slug
+        id: issue-key
+        uses: ./.github/actions/get-issue-key
+      - name: Get version from git tags
+        id: version
+        uses: ./.github/actions/get-version
+        with:
+          build-number: none
+          pre-release-version: ${{ steps.issue-key.outputs.issue_id_slug }}
+  analyse:
     name: Analyse
     runs-on: ubuntu-latest
+    needs:
+      - version
     steps:
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -35,10 +66,17 @@ jobs:
       - name: Build and analyze
         env:
           GITHUB_TOKEN: #@ data.values.scan_code_net.github_token
-          SONAR_TOKEN: #@ data.values.scan_code_net.sonarcloud_token
-          PROJET_NAME: #@ data.values.scan_code_net.sonarcloud_project
-          ORGANISATION_NAME: #@ data.values.scan_code_net.organisation
+          SONAR_TOKEN: #@ data.values.scan_code_net.sonar.token
+          SONAR_PROJET_NAME: #@ data.values.scan_code_net.sonar.project
+          SONAR_ORGANISATION_NAME: #@ data.values.scan_code_net.sonar.organisation
+          VERSION: ${{ needs.version.outputs.app_version }}
+          COVERLET_SETTINGS_FILE: #@ data.values.scan_code_net.coverlet_settings_file
+          TEST_PROJECT_PATH: #@ data.values.scan_code_net.test_project
         run: |
-          dotnet sonarscanner begin /k:$PROJET_NAME /o:$ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io"
-          dotnet build -v q
+          dotnet sonarscanner begin /k:$SONAR_PROJECT_NAME /o:$SONAR_ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="TestResults/TestResults.trx"  /d:sonar.cs.opencover.reportsPaths="TestResults/*/coverage.opencover.xml" /v:$VERSION
+          dotnet build -v q -nologo --configuration Release
+          dotnet test $TEST_PROJECT_PATH --configuration Release --no-restore --no-build --results-directory:TestResults  --logger:"trx;LogFileName=TestResults.trx"  --settings $COVERLET_SETTINGS_FILE
+          find . -name "*opencover*"
+          echo there are two opencover files produces somehow, we need only one, and we delete the second
+          find . -path "./TestResults/*/In" | xargs rm -rf
           dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN

@@ -1,10 +1,13 @@
 #@data/values
 ---
 scan_code_net:
-  organisation: covergo
-  sonarcloud_project:  CoverGo_Auth
+  sonar:
+   organisation: covergo
+   project:  CoverGo_Auth
+   token:  ${{ secrets.SONAR_TOKEN }}
   github_token: ${{ secrets.GITHUB_TOKEN }}
-  sonarcloud_token:  ${{ secrets.SONAR_TOKEN }}
+  coverlet_settings_file:  coverlet.runsettings
+  test_project:  test/Test.My.Project.csproj
   #optional
   #default
   git:
