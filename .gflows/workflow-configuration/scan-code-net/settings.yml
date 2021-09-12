@@ -8,6 +8,7 @@ scan_code_net:
   github_token: ${{ secrets.GITHUB_TOKEN }}
   coverlet_settings_file:  coverlet.runsettings
   test_project:  test/Test.My.Project.csproj
+  timeout: 5
   #optional
   #default
   git:

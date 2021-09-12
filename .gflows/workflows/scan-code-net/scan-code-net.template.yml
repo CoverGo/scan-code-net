@@ -1,6 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:overlay", "overlay")
 #@ load("workflows.lib.yml", "pull_request_defaults")
+#@ load("workflows.lib.yml", "get_timeout")
 
 name: Scan code
 "on": #@ pull_request_defaults(data.values.scan_code_net)
@@ -37,6 +38,7 @@ jobs:
   analyse:
     name: Analyse
     runs-on: ubuntu-latest
+    timeout-minutes: #@ get_timeout(data.values.scan_code_net, data.values)
     needs:
       - version
     steps:
