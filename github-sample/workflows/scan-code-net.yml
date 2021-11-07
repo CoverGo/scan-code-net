@@ -69,6 +69,16 @@ jobs:
         path: ./.sonar/scanner
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
+    - name: Install dotnet 5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5
+        include-prerelease: false
+    - name: Install dotnet 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        include-prerelease: true
     - name: Install SonarCloud scanner
       if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
       run: dotnet tool install --global dotnet-sonarscanner

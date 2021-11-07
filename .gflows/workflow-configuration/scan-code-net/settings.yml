@@ -8,9 +8,14 @@ scan_code_net:
   github_token: ${{ secrets.GITHUB_TOKEN }}
   coverlet_settings_file:  coverlet.runsettings
   test_project:  test/Test.My.Project.csproj
+  #optional
+  dotnet_frameworks:
+    - version: 5.0
+      prerelease: false
+    - version: 6.0.x
+      prerelease: true
   timeout: 5
   #optional
-  #default
   git:
     branches:
       - master
