@@ -10,7 +10,7 @@ scan_code_net:
   test_project:  test/Test.My.Project.csproj
   #optional
   dotnet_frameworks:
-    - version: 5.0
+    - version: 5.x
       prerelease: false
     - version: 6.0.x
       prerelease: true

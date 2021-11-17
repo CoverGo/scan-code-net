@@ -69,10 +69,10 @@ jobs:
         path: ./.sonar/scanner
         key: ${{ runner.os }}-sonar-scanner
         restore-keys: ${{ runner.os }}-sonar-scanner
-    - name: Install dotnet 5
+    - name: Install dotnet 5.x
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5
+        dotnet-version: 5.x
         include-prerelease: false
     - name: Install dotnet 6.0.x
       uses: actions/setup-dotnet@v1
