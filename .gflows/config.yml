@@ -7,5 +7,5 @@ templates:
     libs:
       - workflow-configuration/scan-code-net
     dependencies:
-      - https://raw.githubusercontent.com/CoverGo/ci-workflow-libraries/v1.4/.gflows
+      - https://raw.githubusercontent.com/CoverGo/ci-workflow-libraries/v2.0/.gflows
 
