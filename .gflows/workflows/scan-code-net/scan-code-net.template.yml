@@ -4,7 +4,7 @@
 
 
 name: Scan code
-"on": #@ common.workflow_triggers(getattr(getattr(data.values,"scan_code_net"),"git"))
+"on": #@ common.workflow_triggers(getattr(getattr(data.values,"scan_code_net"),"git",None))
 jobs:
   version:
     runs-on: ubuntu-latest
