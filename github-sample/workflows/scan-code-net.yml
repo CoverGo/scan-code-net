@@ -89,13 +89,6 @@ jobs:
         SONAR_PROJECT_NAME: CoverGo_Auth
         SONAR_ORGANISATION_NAME: covergo
         VERSION: ${{ needs.version.outputs.app_version }}
-        COVERLET_SETTINGS_FILE: coverlet.runsettings
-        TEST_PROJECT_PATH: test/Test.My.Project.csproj
-      run: |
-        dotnet sonarscanner begin /k:$SONAR_PROJECT_NAME /o:$SONAR_ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="TestResults/TestResults.trx"  /d:sonar.cs.opencover.reportsPaths="TestResults/*/coverage.opencover.xml" /v:$VERSION
-        dotnet build -v q -nologo --configuration Release
-        dotnet test $TEST_PROJECT_PATH --configuration Release --no-restore --no-build --results-directory:TestResults  --logger:"trx;LogFileName=TestResults.trx"  --settings $COVERLET_SETTINGS_FILE
-        find . -name "*opencover*"
-        echo there are two opencover files produces somehow, we need only one, and we delete the second
-        find . -path "./TestResults/*/In" | xargs rm -rf
-        dotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN
+        COVERLET_SETTINGS_FILE: ""
+        TEST_PROJECT_PATH: ""
+      run: "dotnet sonarscanner begin /k:$SONAR_PROJECT_NAME /o:$SONAR_ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url=\"https://sonarcloud.io\" /d:sonar.cs.vstest.reportsPaths=\"TestResults/TestResults.trx\"  /d:sonar.cs.opencover.reportsPaths=\"TestResults/*/coverage.opencover.xml\" /v:$VERSION\ndotnet build -v q -nologo --configuration Release\n\nif [[ -z $COVERLET_SETTINGS_FILE ]]; then \n  dotnet test $TEST_PROJECT_PATH --configuration Release --no-restore --no-build --results-directory:TestResults  --logger:\"trx;LogFileName=TestResults.trx\"  --settings $COVERLET_SETTINGS_FILE\nfi\n\nfind . -name \"*opencover*\"\necho there are two opencover files produces somehow, we need only one, and we delete the second\nfind . -path \"./TestResults/*/In\" | xargs rm -rf\ndotnet sonarscanner end /d:sonar.login=$SONAR_TOKEN\n"

@@ -81,12 +81,16 @@ jobs:
           SONAR_PROJECT_NAME: #@ data.values.scan_code_net.sonar.project
           SONAR_ORGANISATION_NAME: #@ data.values.scan_code_net.sonar.organisation
           VERSION: ${{ needs.version.outputs.app_version }}
-          COVERLET_SETTINGS_FILE: #@ data.values.scan_code_net.coverlet_settings_file
-          TEST_PROJECT_PATH: #@ data.values.scan_code_net.test_project
+          COVERLET_SETTINGS_FILE: #@ getattr(data.values.scan_code_net, "coverlet_settings_file", "")
+          TEST_PROJECT_PATH: #@ getattr(data.values.scan_code_net, "test_project", "")
         run: |
           dotnet sonarscanner begin /k:$SONAR_PROJECT_NAME /o:$SONAR_ORGANISATION_NAME /d:sonar.login=$SONAR_TOKEN /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vstest.reportsPaths="TestResults/TestResults.trx"  /d:sonar.cs.opencover.reportsPaths="TestResults/*/coverage.opencover.xml" /v:$VERSION
           dotnet build -v q -nologo --configuration Release
-          dotnet test $TEST_PROJECT_PATH --configuration Release --no-restore --no-build --results-directory:TestResults  --logger:"trx;LogFileName=TestResults.trx"  --settings $COVERLET_SETTINGS_FILE
+          
+          if [[ -z $COVERLET_SETTINGS_FILE ]]; then 
+            dotnet test $TEST_PROJECT_PATH --configuration Release --no-restore --no-build --results-directory:TestResults  --logger:"trx;LogFileName=TestResults.trx"  --settings $COVERLET_SETTINGS_FILE
+          fi
+          
           find . -name "*opencover*"
           echo there are two opencover files produces somehow, we need only one, and we delete the second
           find . -path "./TestResults/*/In" | xargs rm -rf

@@ -6,8 +6,8 @@ scan_code_net:
    project:  CoverGo_Auth
    token:  ${{ secrets.SONAR_TOKEN }}
   github_token: ${{ secrets.GITHUB_TOKEN }}
-  coverlet_settings_file:  coverlet.runsettings
-  test_project:  test/Test.My.Project.csproj
+  #coverlet_settings_file:  coverlet.runsettings
+  #test_project:  test/Test.My.Project.csproj
   #optional
   dotnet_frameworks:
     - version: 5.x
