@@ -7,7 +7,8 @@ scan_code_net:
    token:  ${{ secrets.SONAR_TOKEN }}
   github_token: ${{ secrets.GITHUB_TOKEN }}
   #coverlet_settings_file:  coverlet.runsettings
-  #test_project:  test/Test.My.Project.csproj
+  test_project:  test/Test.My.Project.csproj
+  test_category: "UnitTest"
   #optional
   dotnet_frameworks:
     - version: 5.x
